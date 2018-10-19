@@ -1,0 +1,30 @@
+{
+  "globals": {
+    "process": true
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "amd": true
+  },
+  "extends": [
+    "prettier",
+    "prettier/standard",
+    "plugin:flowtype/recommended"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": [
+    "prettier",
+    "flowtype"
+  ],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-undef": "error",
+    "prettier/prettier": "error"
+  }
+}
+
+
