@@ -10,7 +10,7 @@ class App {
   constructor() {
     const overviewTable = new Table({
       head: [
-        chalk.whiteBright('Current balance'),
+        chalk.whiteBright('Balance'),
         chalk.whiteBright('Day'),
         chalk.whiteBright('Progress'),
       ],
@@ -42,8 +42,11 @@ class App {
 
     console.log(chalk.magentaBright(ascii));
     console.log(
-      chalk.blue(`Cold storage wallet: ${this.coldStorageAddress}\n\n`),
+      `Cold storage wallet: ${
+        this.coldStorageAddress
+      }, start date: 21st of October 2018`,
     );
+    console.log('');
 
     console.log(`${overviewTableStrings[0]}  ${balanceTableStrings[0]}`);
     console.log(`${overviewTableStrings[1]}  ${balanceTableStrings[1]}`);
