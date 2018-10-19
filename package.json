@@ -4,6 +4,7 @@
   "homepage": "https://github.com/wouterds/100BTC-challenge",
   "author": "Wouter De Schuyter <wouter.de.schuyter@gmail.com> (https://wouterdeschuyter.be)",
   "dependencies": {
+    "axios": "^0.18.0",
     "dotenv": "^6.1.0"
   }
 }
