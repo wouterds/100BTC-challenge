@@ -52,45 +52,32 @@ class App {
       head: [
         chalk.whiteBright('Day'),
         chalk.whiteBright('Progress'),
-        chalk.whiteBright('Balance'),
+        chalk.whiteBright('Total Balance'),
+        chalk.whiteBright('Wallet balance'),
+        chalk.whiteBright('Bitmex balance'),
       ],
+      colWidths: [6, 18, 20, 20, 20],
     });
     overviewTable.push([
       this.day,
       `${this.progress.toFixed(2)}%`,
       `${this.totalBalance.toFixed(2)} BTC`,
-    ]);
-
-    const balanceTable = new Table({
-      head: [
-        chalk.whiteBright('Cold storage balance'),
-        chalk.whiteBright('Bitmex balance'),
-      ],
-    });
-    balanceTable.push([
       `${this.walletBalance.toFixed(8)} BTC`,
       `${this.bitmexBalance.toFixed(8)} BTC`,
     ]);
-
-    const overviewTableStrings = overviewTable.toString().split('\n');
-    const balanceTableStrings = balanceTable.toString().split('\n');
-
-    console.log(`${overviewTableStrings[0]} ${balanceTableStrings[0]}`);
-    console.log(`${overviewTableStrings[1]} ${balanceTableStrings[1]}`);
-    console.log(`${overviewTableStrings[2]} ${balanceTableStrings[2]}`);
-    console.log(`${overviewTableStrings[3]} ${balanceTableStrings[3]}`);
-    console.log(`${overviewTableStrings[4]} ${balanceTableStrings[4]}`);
 
     const dataTable = new Table({
       head: [
         chalk.whiteBright('Day'),
         chalk.whiteBright('Progress'),
         chalk.whiteBright('Balance'),
+        chalk.whiteBright('Change'),
         chalk.whiteBright('Date'),
       ],
-      colWidths: [10, 18, 22, 16],
+      colWidths: [6, 18, 20, 20, 20],
     });
 
+    console.log(overviewTable.toString());
     console.log(dataTable.toString());
   }
 }
