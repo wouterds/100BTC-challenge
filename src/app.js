@@ -1,6 +1,7 @@
 //@flow
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import { differenceInDays } from 'date-fns';
 import Header from './header';
 import Wallet from './wallet';
 
@@ -59,7 +60,7 @@ class App {
   }
 
   get day(): number {
-    return 3;
+    return differenceInDays(new Date(), process.env.START_DATE);
   }
 
   get progress(): number {
