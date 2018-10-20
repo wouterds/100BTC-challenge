@@ -24,6 +24,10 @@ class App {
     return (this.totalBalance / process.env.BTC_BALANCE_GOAL) * 100;
   }
 
+  get bitmexHistory(): { [key: string]: number } {
+    return this._bitmexHistory;
+  }
+
   get totalBalance(): number {
     return this.bitmexBalance + this.walletBalance;
   }
@@ -39,6 +43,9 @@ class App {
   fetch = async (callback: Function) => {
     this._bitmexBalance = await Bitmex.balance;
     this._walletBalance = await Wallet.balance;
+    this._bitmexHistory = await Bitmex.getBalanceHistory(
+      process.env.START_DATE,
+    );
 
     callback();
   };
@@ -72,6 +79,16 @@ class App {
       ],
       colWidths: [6, 18, 20, 20, 20],
     });
+
+    this.bitmexHistory.forEach(({ date, value }) =>
+      dataTable.push([
+        differenceInDays(date, process.env.START_DATE),
+        `${((value / process.env.BTC_BALANCE_GOAL) * 100).toFixed(2)}%`,
+        value,
+        '--',
+        date,
+      ]),
+    );
 
     console.log(overviewTable.toString());
     console.log(dataTable.toString());
