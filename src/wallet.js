@@ -3,7 +3,7 @@ import axios from 'axios';
 
 class Wallet {
   static get balance(): number {
-    const address = process.env.BTC_COLD_STORAGE_ADDRESS;
+    const address = process.env.BTC_WALLET_ADDRESS;
 
     return (async () => {
       try {

@@ -7,7 +7,7 @@ const options = { encoding: 'utf-8', flag: 'r' };
 const ascii = fs.readFileSync('resources/ascii.txt', options);
 
 const print = () => {
-  const wallet = process.env.BTC_COLD_STORAGE_ADDRESS;
+  const wallet = process.env.BTC_WALLET_ADDRESS;
   const date = format(process.env.START_DATE, 'MMMM Mo, YYYY');
 
   console.log(chalk.magentaBright(ascii));
