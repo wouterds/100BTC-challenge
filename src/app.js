@@ -85,19 +85,19 @@ class App {
     let history = this.bitmexHistory
       .reverse()
       .map(({ date, value, change }) => {
-        const progress = (value / process.env.BTC_BALANCE_GOAL) * 100;
+        const progress =
+          Math.round((value / process.env.BTC_BALANCE_GOAL) * 10000) / 100;
         let progressChange =
-          previousProgress !== null ? progress - previousProgress : null;
+          previousProgress !== null ? progress - previousProgress : 0;
         previousProgress = progress;
 
-        progressChange =
-          progressChange === null
-            ? ''
-            : progressChange > 0
-              ? chalk.green(`+${progressChange.toFixed(2)}%`)
-              : progressChange < 0
-                ? chalk.red(`${progressChange.toFixed(2)}%`)
-                : `+${progressChange.toFixed(2)}%`;
+        progressChange = !progressChange
+          ? ''
+          : progressChange > 0
+            ? chalk.green(`+${progressChange.toFixed(2)}%`)
+            : progressChange < 0
+              ? chalk.red(`${progressChange.toFixed(2)}%`)
+              : `+${progressChange.toFixed(2)}%`;
 
         return { date, value, change, progress, progressChange };
       });
