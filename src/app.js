@@ -1,12 +1,10 @@
 //@flow
 import chalk from 'chalk';
 import Table from 'cli-table3';
-import axios from 'axios';
 import Header from './header';
+import Wallet from './wallet';
 
 class App {
-  coldStorageAddress: string = process.env.BTC_COLD_STORAGE_ADDRESS;
-
   constructor() {
     const overviewTable = new Table({
       head: [
@@ -28,7 +26,7 @@ class App {
       ],
     });
     balanceTable.push([
-      `${this.coldStorageBalance.toFixed(8)} BTC`,
+      `${Wallet.balance.toFixed(8)} BTC`,
       `${this.bitmexBalance.toFixed(8)} BTC`,
     ]);
 
@@ -73,27 +71,11 @@ class App {
   }
 
   get totalBalance(): number {
-    return this.bitmexBalance + this.coldStorageBalance;
+    return this.bitmexBalance + Wallet.balance;
   }
 
   get bitmexBalance(): number {
     return 1.031568916;
-  }
-
-  get coldStorageBalance(): number {
-    async () => {
-      try {
-        const { data } = axios.get(
-          `https://blockexplorer.com/api/addr/${this.coldStorageAddress}`,
-        );
-
-        return data.balance;
-      } catch {
-        return 0;
-      }
-    };
-
-    return 0;
   }
 }
 
