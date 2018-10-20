@@ -8,7 +8,7 @@ const ascii = fs.readFileSync('resources/ascii.txt', options);
 
 const print = () => {
   const wallet = process.env.BTC_WALLET_ADDRESS;
-  const date = format(process.env.START_DATE, 'MMMM Mo, YYYY');
+  const date = format(process.env.START_DATE, 'MMMM Do, YYYY');
 
   console.log(chalk.magentaBright(ascii));
   console.log(`Cold storage wallet: ${wallet}, start date: ${date}\n`);
