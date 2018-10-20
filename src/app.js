@@ -4,9 +4,50 @@ import Table from 'cli-table3';
 import { differenceInDays } from 'date-fns';
 import Header from './header';
 import Wallet from './wallet';
+import Bitmex from './bitmex';
 
 class App {
+  _walletBalance: number = 0;
+  _bitmexBalance: number = 0;
+
   constructor() {
+    Header.print();
+
+    this.fetch(() => this.printData());
+  }
+
+  get day(): number {
+    return differenceInDays(new Date(), process.env.START_DATE);
+  }
+
+  get progress(): number {
+    return (this.totalBalance / this.goalBalance) * 100;
+  }
+
+  get goalBalance(): number {
+    return 100;
+  }
+
+  get totalBalance(): number {
+    return this.bitmexBalance + this.walletBalance;
+  }
+
+  get walletBalance(): number {
+    return this._walletBalance;
+  }
+
+  get bitmexBalance(): number {
+    return this._bitmexBalance;
+  }
+
+  fetch = async (callback: Function) => {
+    this._bitmexBalance = await Bitmex.balance;
+    this._walletBalance = await Wallet.balance;
+
+    callback();
+  };
+
+  printData() {
     const overviewTable = new Table({
       head: [
         chalk.whiteBright('Day'),
@@ -27,14 +68,12 @@ class App {
       ],
     });
     balanceTable.push([
-      `${Wallet.balance.toFixed(8)} BTC`,
+      `${this.walletBalance.toFixed(8)} BTC`,
       `${this.bitmexBalance.toFixed(8)} BTC`,
     ]);
 
     const overviewTableStrings = overviewTable.toString().split('\n');
     const balanceTableStrings = balanceTable.toString().split('\n');
-
-    Header.print();
 
     console.log(`${overviewTableStrings[0]} ${balanceTableStrings[0]}`);
     console.log(`${overviewTableStrings[1]} ${balanceTableStrings[1]}`);
@@ -53,26 +92,6 @@ class App {
     });
 
     console.log(dataTable.toString());
-  }
-
-  get day(): number {
-    return differenceInDays(new Date(), process.env.START_DATE);
-  }
-
-  get progress(): number {
-    return (this.totalBalance / this.goalBalance) * 100;
-  }
-
-  get goalBalance(): number {
-    return 100;
-  }
-
-  get totalBalance(): number {
-    return this.bitmexBalance + Wallet.balance;
-  }
-
-  get bitmexBalance(): number {
-    return 1.031568916;
   }
 }
 
