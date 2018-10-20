@@ -1,6 +1,7 @@
 //@flow
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import { maxBy } from 'lodash';
 import { differenceInDays } from 'date-fns';
 import Header from './header';
 import Wallet from './wallet';
@@ -101,11 +102,15 @@ class App {
         return { date, value, change, progress, progressChange };
       });
 
+    const bestDay = maxBy(history, 'value');
+
     history
       .reverse()
       .forEach(({ date, value, change, progress, progressChange }, index) =>
         dataTable.push([
-          differenceInDays(date, process.env.START_DATE),
+          bestDay.date === date
+            ? chalk.yellowBright(differenceInDays(date, process.env.START_DATE))
+            : differenceInDays(date, process.env.START_DATE),
           `${progress.toFixed(2)}% ${progressChange}`,
           `${value.toFixed(8)} BTC`,
           change === null || index === this.bitmexHistory.length - 1
