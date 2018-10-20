@@ -62,11 +62,11 @@ class App {
       colWidths: [6, 18, 20, 20, 20],
     });
     overviewTable.push([
-      this.day,
-      `${this.progress.toFixed(2)}%`,
-      `${this.totalBalance.toFixed(2)} BTC`,
-      `${this.walletBalance.toFixed(8)} BTC`,
-      `${this.bitmexBalance.toFixed(8)} BTC`,
+      chalk.blueBright(this.day),
+      chalk.blueBright(`${this.progress.toFixed(2)}%`),
+      chalk.blueBright(`${this.totalBalance.toFixed(2)} BTC`),
+      chalk.blueBright(`${this.walletBalance.toFixed(8)} BTC`),
+      chalk.blueBright(`${this.bitmexBalance.toFixed(8)} BTC`),
     ]);
 
     const dataTable = new Table({
