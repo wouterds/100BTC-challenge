@@ -1,7 +1,7 @@
 //@flow
 import axios from 'axios';
 import crypto from 'crypto';
-import { format, getTime, isBefore, isAfter } from 'date-fns';
+import { format, getTime, isBefore, subDays, isAfter } from 'date-fns';
 
 const apiCall = async (path: string): ?Object => {
   path = `/api/v1${path}`;
@@ -95,7 +95,7 @@ class Bitmex {
     const entries = await Bitmex.balanceHistory;
 
     // Filter out entries before offset
-    return entries.filter(({ date }) => isAfter(date, offset));
+    return entries.filter(({ date }) => isAfter(date, subDays(offset, 1)));
   };
 }
 
