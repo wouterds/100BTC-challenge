@@ -46,7 +46,7 @@ class Bitmex {
     })();
   }
 
-  static get balanceHistory(): { [key: string]: number } {
+  static get balanceHistory(): Array<{ date: string, value: number }> {
     return (async () => {
       let data = await apiCall('/user/walletHistory');
 
@@ -71,23 +71,24 @@ class Bitmex {
           item.walletBalance / 100000000;
       });
 
-      return entries;
+      // Return array of objects
+      entries = Object.entries(entries).map(([date, value]) => ({
+        date,
+        value,
+      }));
+
+      // Reverse again to descending order
+      return entries.reverse();
     })();
   }
 
   static getBalanceHistory = async (
     offset: Date,
-  ): { [key: string]: number } => {
-    let entries = {};
+  ): Array<{ date: string, value: number }> => {
+    const entries = await Bitmex.balanceHistory;
 
-    const balanceHistory = await Bitmex.balanceHistory;
-    Object.keys(balanceHistory).forEach((date: string) => {
-      if (isAfter(date, offset)) {
-        entries[date] = balanceHistory[date];
-      }
-    });
-
-    return entries;
+    // Filter out entries before offset
+    return entries.filter(({ date }) => isAfter(date, offset));
   };
 }
 
