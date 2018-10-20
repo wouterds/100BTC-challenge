@@ -1,7 +1,7 @@
 //@flow
 import axios from 'axios';
 import crypto from 'crypto';
-import { getTime } from 'date-fns';
+import { format, getTime, isBefore, isAfter } from 'date-fns';
 
 const apiCall = async (path: string): ?Object => {
   path = `/api/v1${path}`;
@@ -45,6 +45,49 @@ class Bitmex {
       return parseFloat(data.amount / 100000000);
     })();
   }
+
+  static get balanceHistory(): { [key: string]: number } {
+    return (async () => {
+      let data = await apiCall('/user/walletHistory');
+
+      if (!data) {
+        return [];
+      }
+
+      // Filter out deposits withdrawals etc
+      data = data.filter(item => item.transactType === 'RealisedPNL');
+
+      // Filter out everything before current date
+      data = data.filter((item: Object) =>
+        isBefore(item.timestamp, new Date()),
+      );
+
+      // Sort ascending
+      data = data.reverse();
+
+      let entries = {};
+      data.forEach(item => {
+        entries[format(item.timestamp, 'YYYY-MM-DD')] = item.walletBalance;
+      });
+
+      return entries;
+    })();
+  }
+
+  static getBalanceHistory = async (
+    offset: Date,
+  ): { [key: string]: number } => {
+    let entries = {};
+
+    const balanceHistory = await Bitmex.balanceHistory;
+    Object.keys(balanceHistory).forEach((date: string) => {
+      if (isAfter(date, offset)) {
+        entries[date] = balanceHistory[date];
+      }
+    });
+
+    return entries;
+  };
 }
 
 export default Bitmex;
