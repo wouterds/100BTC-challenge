@@ -21,11 +21,7 @@ class App {
   }
 
   get progress(): number {
-    return (this.totalBalance / this.goalBalance) * 100;
-  }
-
-  get goalBalance(): number {
-    return 100;
+    return (this.totalBalance / process.env.BTC_BALANCE_GOAL) * 100;
   }
 
   get totalBalance(): number {
