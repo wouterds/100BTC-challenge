@@ -72,10 +72,17 @@ class Bitmex {
       });
 
       // Return array of objects
-      entries = Object.entries(entries).map(([date, value]) => ({
-        date,
-        value,
-      }));
+      let previousValue = null;
+      entries = Object.entries(entries).map(([date, value]) => {
+        const change = previousValue !== null ? value - previousValue : null;
+        previousValue = value;
+
+        return {
+          date,
+          value,
+          change,
+        };
+      });
 
       // Reverse again to descending order
       return entries.reverse();
