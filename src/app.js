@@ -1,8 +1,8 @@
 //@flow
-import fs from 'fs';
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import axios from 'axios';
+import Header from './header';
 
 class App {
   coldStorageAddress: string = process.env.BTC_COLD_STORAGE_ADDRESS;
@@ -35,18 +35,7 @@ class App {
     const overviewTableStrings = overviewTable.toString().split('\n');
     const balanceTableStrings = balanceTable.toString().split('\n');
 
-    const ascii = fs.readFileSync('resources/ascii.txt', {
-      encoding: 'utf-8',
-      flag: 'r',
-    });
-
-    console.log(chalk.magentaBright(ascii));
-    console.log(
-      `Cold storage wallet: ${
-        this.coldStorageAddress
-      }, start date: 21st of October 2018`,
-    );
-    console.log('');
+    Header.print();
 
     console.log(`${overviewTableStrings[0]} ${balanceTableStrings[0]}`);
     console.log(`${overviewTableStrings[1]} ${balanceTableStrings[1]}`);
