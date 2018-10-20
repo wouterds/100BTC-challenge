@@ -5,9 +5,9 @@ class Wallet {
   static get balance(): number {
     const address = process.env.BTC_COLD_STORAGE_ADDRESS;
 
-    async () => {
+    return (async () => {
       try {
-        const response = axios.get(
+        const response = await axios.get(
           `https://blockexplorer.com/api/addr/${address}`,
         );
 
@@ -27,9 +27,7 @@ class Wallet {
       } catch {
         return 0;
       }
-    };
-
-    return 0;
+    })();
   }
 }
 
