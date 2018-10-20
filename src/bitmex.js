@@ -67,7 +67,8 @@ class Bitmex {
 
       let entries = {};
       data.forEach(item => {
-        entries[format(item.timestamp, 'YYYY-MM-DD')] = item.walletBalance;
+        entries[format(item.timestamp, 'YYYY-MM-DD')] =
+          item.walletBalance / 100000000;
       });
 
       return entries;
