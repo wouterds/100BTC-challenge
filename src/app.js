@@ -80,15 +80,44 @@ class App {
       colWidths: [6, 18, 20, 20, 20],
     });
 
-    this.bitmexHistory.forEach(({ date, value }) =>
-      dataTable.push([
-        differenceInDays(date, process.env.START_DATE),
-        `${((value / process.env.BTC_BALANCE_GOAL) * 100).toFixed(2)}%`,
-        value,
-        '--',
-        date,
-      ]),
-    );
+    let previousProgress = null;
+    let history = this.bitmexHistory
+      .reverse()
+      .map(({ date, value, change }) => {
+        const progress = (value / process.env.BTC_BALANCE_GOAL) * 100;
+        let progressChange =
+          previousProgress !== null ? progress - previousProgress : null;
+        previousProgress = progress;
+
+        progressChange =
+          progressChange === null
+            ? ''
+            : progressChange > 0
+              ? chalk.green(`+${progressChange.toFixed(2)}%`)
+              : progressChange < 0
+                ? chalk.red(`${progressChange.toFixed(2)}%`)
+                : `+${progressChange.toFixed(2)}%`;
+
+        return { date, value, change, progress, progressChange };
+      });
+
+    history
+      .reverse()
+      .forEach(({ date, value, change, progress, progressChange }, index) =>
+        dataTable.push([
+          differenceInDays(date, process.env.START_DATE),
+          `${progress.toFixed(2)}% ${progressChange}`,
+          `${value.toFixed(8)} BTC`,
+          change === null || index === this.bitmexHistory.length - 1
+            ? '--'
+            : change > 0
+              ? chalk.green(`+${change.toFixed(8)} BTC`)
+              : change < 0
+                ? chalk.red(`${change.toFixed(8)} BTC`)
+                : `${change.toFixed(8)} BTC`,
+          date,
+        ]),
+      );
 
     console.log(overviewTable.toString());
     console.log(dataTable.toString());
