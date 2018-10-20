@@ -52,10 +52,6 @@ class App {
       colWidths: [10, 18, 22, 16],
     });
 
-    dataTable.push([3, '1.03%', '1.031568916 BTC', '2018-10-23']);
-    dataTable.push([2, '0.89%', '0.893464621 BTC', '2018-10-22']);
-    dataTable.push([1, '1.00%', '1.000000000 BTC', '2018-10-21']);
-
     console.log(dataTable.toString());
   }
 
