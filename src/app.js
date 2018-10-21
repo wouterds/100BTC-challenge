@@ -44,9 +44,7 @@ class App {
   fetch = async (callback: Function) => {
     this._bitmexBalance = await Bitmex.balance;
     this._walletBalance = await Wallet.balance;
-    this._bitmexHistory = await Bitmex.getBalanceHistory(
-      process.env.START_DATE,
-    );
+    this._bitmexHistory = await Bitmex.balanceHistory;
 
     callback();
   };

@@ -1,7 +1,16 @@
 //@flow
 import axios from 'axios';
 import crypto from 'crypto';
-import { format, getTime, isBefore, subDays, isAfter } from 'date-fns';
+import {
+  format,
+  getTime,
+  isBefore,
+  isAfter,
+  addDays,
+  differenceInDays,
+  subDays,
+} from 'date-fns';
+import { sortBy } from 'lodash';
 
 const apiCall = async (path: string): ?Object => {
   path = `/api/v1${path}`;
@@ -54,49 +63,54 @@ class Bitmex {
         return [];
       }
 
-      // Filter out deposits withdrawals etc
       data = data.filter(item => item.transactType === 'RealisedPNL');
 
-      // Filter out everything before current date
       data = data.filter((item: Object) =>
         isBefore(item.timestamp, new Date()),
       );
 
-      // Sort ascending
       data = data.reverse();
 
       let entries = {};
       data.forEach(item => {
-        entries[format(item.timestamp, 'YYYY-MM-DD')] =
-          item.walletBalance / 100000000;
+        if (isAfter(item.timestamp, process.env.START_DATE)) {
+          entries[format(item.timestamp, 'YYYY-MM-DD')] =
+            item.walletBalance / 100000000;
+        }
       });
 
-      // Return array of objects
-      let previousValue = null;
-      entries = Object.entries(entries).map(([date, value]) => {
-        const change = previousValue !== null ? value - previousValue : null;
-        previousValue = value;
+      for (
+        let i = 0;
+        i < differenceInDays(new Date(), process.env.START_DATE);
+        i++
+      ) {
+        const date = format(addDays(process.env.START_DATE, i), 'YYYY-MM-DD');
 
+        if (!entries[date]) {
+          const previousEntry = entries[format(subDays(date, 1), 'YYYY-MM-DD')];
+
+          entries[date] = previousEntry || 0;
+        }
+      }
+
+      entries = Object.entries(entries).map(([date, value]) => {
         return {
           date,
           value,
-          change,
         };
       });
 
-      // Reverse again to descending order
+      let previousValue = null;
+      entries = sortBy(entries, 'date').map(({ date, value }) => {
+        const change = previousValue !== null ? value - previousValue : null;
+        previousValue = value;
+
+        return { date, value, change };
+      });
+
       return entries.reverse();
     })();
   }
-
-  static getBalanceHistory = async (
-    offset: Date,
-  ): Array<{ date: string, value: number }> => {
-    const entries = await Bitmex.balanceHistory;
-
-    // Filter out entries before offset
-    return entries.filter(({ date }) => isAfter(date, subDays(offset, 1)));
-  };
 }
 
 export default Bitmex;
