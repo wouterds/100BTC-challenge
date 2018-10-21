@@ -1,7 +1,7 @@
 //@flow
 import chalk from 'chalk';
 import Table from 'cli-table3';
-import { maxBy } from 'lodash';
+import { find, maxBy } from 'lodash';
 import { differenceInDays } from 'date-fns';
 import Header from './header';
 import Wallet from './wallet';
@@ -31,6 +31,40 @@ class App {
 
   get walletHistory(): Array<{ date: string, value: number, change: number }> {
     return this._walletHistory;
+  }
+
+  get combinedHistory(): Array<{
+    date: string,
+    value: number,
+    change: number,
+  }> {
+    const biggestHistory =
+      this.bitmexHistory.length > this.walletHistory.length
+        ? this.bitmexHistory
+        : this.walletHistory;
+    const smallestHistory =
+      this.bitmexHistory.length > this.bitmexHistory.length
+        ? this.walletHistory
+        : this.bitmexHistory;
+
+    return biggestHistory.map(entry => {
+      const smallestHistoryEntry = find(
+        smallestHistory,
+        ({ date }) => date === entry.date,
+      );
+
+      if (!smallestHistoryEntry) {
+        return entry;
+      }
+
+      const { date, value, change } = entry;
+
+      return {
+        date,
+        value: value + smallestHistoryEntry.value,
+        change: change + smallestHistoryEntry.change,
+      };
+    });
   }
 
   get totalBalance(): number {
@@ -85,7 +119,7 @@ class App {
     });
 
     let previousProgress = null;
-    let history = this.bitmexHistory
+    let history = this.combinedHistory
       .reverse()
       .map(({ date, value, change }) => {
         const progress =
