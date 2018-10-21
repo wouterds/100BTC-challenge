@@ -29,6 +29,10 @@ class App {
     return this._bitmexHistory;
   }
 
+  get walletHistory(): { [key: string]: number } {
+    return this._walletHistory;
+  }
+
   get totalBalance(): number {
     return this.bitmexBalance + this.walletBalance;
   }
@@ -45,6 +49,7 @@ class App {
     this._bitmexBalance = await Bitmex.balance;
     this._walletBalance = await Wallet.balance;
     this._bitmexHistory = await Bitmex.balanceHistory;
+    this._walletHistory = await Wallet.balanceHistory;
 
     callback();
   };
