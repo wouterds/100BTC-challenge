@@ -55,7 +55,11 @@ class Bitmex {
     })();
   }
 
-  static get balanceHistory(): Array<{ date: string, value: number }> {
+  static get balanceHistory(): Array<{
+    date: string,
+    value: number,
+    change: number,
+  }> {
     return (async () => {
       let data = await apiCall('/user/walletHistory');
 

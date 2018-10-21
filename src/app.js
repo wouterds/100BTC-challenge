@@ -25,11 +25,11 @@ class App {
     return (this.totalBalance / process.env.BTC_BALANCE_GOAL) * 100;
   }
 
-  get bitmexHistory(): { [key: string]: number } {
+  get bitmexHistory(): Array<{ date: string, value: number, change: number }> {
     return this._bitmexHistory;
   }
 
-  get walletHistory(): { [key: string]: number } {
+  get walletHistory(): Array<{ date: string, value: number, change: number }> {
     return this._walletHistory;
   }
 

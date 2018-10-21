@@ -32,7 +32,11 @@ class Wallet {
     })();
   }
 
-  static get balanceHistory(): Array<{ date: string, value: number }> {
+  static get balanceHistory(): Array<{
+    date: string,
+    value: number,
+    change: number,
+  }> {
     return (async () => {
       let response = {};
       try {
