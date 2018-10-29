@@ -23,7 +23,7 @@ class Wallet {
 
         const { final_balance } = data;
 
-        return parseFloat(final_balance);
+        return parseFloat(final_balance / 100000000);
       } catch {
         return 0;
       }
