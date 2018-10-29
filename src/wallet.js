@@ -8,9 +8,7 @@ class Wallet {
     return (async () => {
       try {
         const response = await axios.get(
-          `https://blockexplorer.com/api/addr/${
-            process.env.BTC_WALLET_ADDRESS
-          }`,
+          `https://blockchain.info/rawaddr/${process.env.BTC_WALLET_ADDRESS}`,
         );
 
         if (response.status !== 200) {
@@ -23,9 +21,9 @@ class Wallet {
           return 0;
         }
 
-        const { balance } = data;
+        const { final_balance } = data;
 
-        return parseFloat(balance);
+        return parseFloat(final_balance);
       } catch {
         return 0;
       }
