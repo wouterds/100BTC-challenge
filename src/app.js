@@ -161,6 +161,17 @@ class App {
         ]),
       );
 
+    if (this.day < 0) {
+      console.log(
+        chalk.yellowBright(
+          `No data to report yet, challenge starts in ${Math.abs(
+            this.day,
+          )} day${Math.abs(this.day) !== 1 ? 's' : ''}.`,
+        ),
+      );
+      return;
+    }
+
     console.log(overviewTable.toString());
     console.log(dataTable.toString());
   }
