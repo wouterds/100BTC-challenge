@@ -1,6 +1,6 @@
-# 1 - 100 Bitcoin Challenge
+# Bitcoin Challenge
 
-Simple challenge: start off with 1 BTC and trade your way up to 100 BTC. Obviously you don't need to per se start with 1 Bitcoin and go to 100, [it's configurable](#configuration), whatever you like. This repo keeps track of your wallet balance and Bitmex balance combined over time to help you keep track & visualize progress.
+Simple challenge: start off with 1 BTC and trade your way up to 100 BTC. Obviously you don't need to per se start with 1 Bitcoin and go to 100, [it's configurable](#configuration). Whatever you like, I'm trying to go from 0.1 to 1 for example. This repo keeps track of your wallet balance and Bitmex balance combined over time to help you keep track & visualize progress.
 
 ![Screenshot](resources/images/screenshot.jpg?raw=true)
 
@@ -25,8 +25,8 @@ cp .env.example .env
 ```
 
 ```text
-START_DATE=2018-01-01
-BTC_BALANCE_GOAL=100
+START_DATE=2018-11-01
+BTC_BALANCE_GOAL=10
 BTC_WALLET_ADDRESS=1Cj9w6SsJQABFv611RHV728qa4tAWo1TJv
 BITMEX_API_KEY_ID=XXXXXXXXXXXXXXXXXXX
 BITMEX_API_KEY_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
