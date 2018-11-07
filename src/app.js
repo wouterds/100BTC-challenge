@@ -38,14 +38,12 @@ class App {
     value: number,
     change: number,
   }> {
-    const biggestHistory =
-      this.bitmexHistory.length > this.walletHistory.length
-        ? this.bitmexHistory
-        : this.walletHistory;
-    const smallestHistory =
-      this.bitmexHistory.length > this.bitmexHistory.length
-        ? this.walletHistory
-        : this.bitmexHistory;
+    let biggestHistory = this.bitmexHistory;
+    let smallestHistory = this.walletHistory;
+    if (this.bitmexHistory.length < this.walletHistory.length) {
+      smallestHistory = this.bitmexHistory;
+      biggestHistory = this.walletHistory;
+    }
 
     return biggestHistory.map(entry => {
       const smallestHistoryEntry = find(
