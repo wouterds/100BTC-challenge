@@ -1,6 +1,13 @@
 //@flow
 import axios from 'axios';
-import { format, differenceInDays, addDays, subDays, isAfter } from 'date-fns';
+import {
+  format,
+  differenceInDays,
+  addDays,
+  subDays,
+  isAfter,
+  compareAsc,
+} from 'date-fns';
 import { sortBy } from 'lodash';
 
 class Wallet {
@@ -21,9 +28,9 @@ class Wallet {
           return 0;
         }
 
-        const { final_balance } = data;
+        const { final_balance: finalBalance } = data;
 
-        return parseFloat(final_balance / 100000000);
+        return parseFloat(finalBalance / 100000000);
       } catch {
         return 0;
       }
@@ -50,19 +57,22 @@ class Wallet {
       const { data } = response;
 
       let entries = {};
+      let dateFirstEntry = null;
       data.txs.reverse().forEach(item => {
-        if (isAfter(new Date(item.time * 1000), process.env.START_DATE)) {
-          entries[format(new Date(item.time * 1000), 'YYYY-MM-DD')] =
-            item.balance / 100000000;
+        if (dateFirstEntry === null) {
+          dateFirstEntry = new Date(item.time * 1000);
         }
+
+        entries[format(new Date(item.time * 1000), 'YYYY-MM-DD')] =
+          item.balance / 100000000;
       });
 
-      for (
-        let i = 0;
-        i < differenceInDays(new Date(), process.env.START_DATE);
-        i++
-      ) {
-        const date = format(addDays(process.env.START_DATE, i), 'YYYY-MM-DD');
+      let oldestDate = compareAsc(dateFirstEntry, process.env.START_DATE)
+        ? dateFirstEntry
+        : process.env.START_DATE;
+
+      for (let i = 0; i < differenceInDays(new Date(), oldestDate) + 2; i++) {
+        const date = format(addDays(oldestDate, i), 'YYYY-MM-DD');
 
         if (!entries[date]) {
           const previousEntry = entries[format(subDays(date, 1), 'YYYY-MM-DD')];
@@ -77,6 +87,10 @@ class Wallet {
           value,
         };
       });
+
+      entries = entries.filter(({ date }) =>
+        isAfter(date, subDays(process.env.START_DATE, 1)),
+      );
 
       let previousValue = null;
       entries = sortBy(entries, 'date').map(({ date, value }) => {
