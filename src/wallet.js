@@ -7,6 +7,7 @@ import {
   subDays,
   isAfter,
   compareAsc,
+  isToday,
 } from 'date-fns';
 import { sortBy } from 'lodash';
 
@@ -71,7 +72,7 @@ class Wallet {
         ? dateFirstEntry
         : process.env.START_DATE;
 
-      for (let i = 0; i < differenceInDays(new Date(), oldestDate) + 2; i++) {
+      for (let i = 0; i < differenceInDays(new Date(), oldestDate) + 1; i++) {
         const date = format(addDays(oldestDate, i), 'YYYY-MM-DD');
 
         if (!entries[date]) {
@@ -91,6 +92,8 @@ class Wallet {
       entries = entries.filter(({ date }) =>
         isAfter(date, subDays(process.env.START_DATE, 1)),
       );
+
+      entries = entries.filter(({ date }) => !isToday(date));
 
       let previousValue = null;
       entries = sortBy(entries, 'date').map(({ date, value }) => {

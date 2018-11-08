@@ -9,6 +9,7 @@ import {
   addDays,
   differenceInDays,
   subDays,
+  isToday,
 } from 'date-fns';
 import { sortBy } from 'lodash';
 
@@ -77,10 +78,8 @@ class Bitmex {
 
       let entries = {};
       data.forEach(item => {
-        if (isAfter(item.timestamp, process.env.START_DATE)) {
-          entries[format(item.timestamp, 'YYYY-MM-DD')] =
-            item.walletBalance / 100000000;
-        }
+        entries[format(item.timestamp, 'YYYY-MM-DD')] =
+          item.walletBalance / 100000000;
       });
 
       for (
@@ -103,6 +102,12 @@ class Bitmex {
           value,
         };
       });
+
+      entries = entries.filter(({ date }) =>
+        isAfter(date, subDays(process.env.START_DATE, 1)),
+      );
+
+      entries = entries.filter(({ date }) => !isToday(date));
 
       let previousValue = null;
       entries = sortBy(entries, 'date').map(({ date, value }) => {
