@@ -11,7 +11,7 @@ import {
   subDays,
   isToday,
 } from 'date-fns';
-import { sortBy } from 'lodash';
+import { find, sortBy } from 'lodash';
 
 const apiCall = async (path: string): ?Object => {
   path = `/api/v1${path}`;
@@ -46,13 +46,15 @@ const apiCall = async (path: string): ?Object => {
 class Bitmex {
   static get balance(): number {
     return (async () => {
-      const data = await apiCall('/user/wallet');
+      const data = await apiCall('/user/walletSummary');
 
       if (!data) {
         return 0;
       }
 
-      return parseFloat(data.amount / 100000000);
+      const { walletBalance } = find(data, { transactType: 'Total' });
+
+      return parseFloat(walletBalance / 100000000);
     })();
   }
 
